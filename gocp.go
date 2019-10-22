@@ -20,7 +20,10 @@ func prepare(contestNo string) error {
 	dir := filepath.Join(wd, contestNo)
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		// collect task list
-		tasks := checkTasks(contestNo)
+		tasks, err := checkTasks(contestNo)
+		if err != nil {
+			return err
+		}
 		for _, task := range tasks {
 			p := filepath.Join(dir, task)
 			err = os.MkdirAll(p, os.ModePerm)
@@ -50,7 +53,7 @@ func main() {
 
 	// init
 	// make directory and template files (default language is C++)
-	prepareC := flag.NewFlagSet("prepare", flag.ExitOnError)
+	prepareCommand := flag.NewFlagSet("prepare", flag.ExitOnError)
 
 	// info
 	// show contest info
@@ -84,7 +87,7 @@ func main() {
 
 	switch os.Args[1] {
 	case "prepare":
-		prepareC.Parse(os.Args[2:])
+		prepareCommand.Parse(os.Args[2:])
 	case "info":
 		info.Parse(os.Args[0:])
 	case "test":
@@ -93,14 +96,15 @@ func main() {
 		submit.Parse(os.Args[0:])
 	default:
 		flag.Usage()
+		return
 	}
 
-	if prepareC.Parsed() {
-		if len(prepareC.Args()) != 1 {
-			fmt.Println("ERROR")
+	if prepareCommand.Parsed() {
+		if len(prepareCommand.Args()) != 1 {
+			flag.Usage()
 			return
 		}
-		err := prepare(prepareC.Arg(0))
+		err := prepare(prepareCommand.Arg(0))
 		if err != nil {
 			fmt.Println(err)
 		}

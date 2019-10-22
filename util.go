@@ -6,10 +6,6 @@ import (
 	"net/http"
 )
 
-var (
-	StatusError = errors.New("error status code")
-)
-
 const (
 	baseURL = "https://atcoder.jp/contests/"
 )
@@ -22,13 +18,13 @@ func validateHeader(str string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return StatusError
+		return errors.New("ERROR: status code")
 	}
 
 	return nil
 }
 
-func checkTasks(contestNo string) []string {
+func checkTasks(contestNo string) ([]string, error) {
 	alpha := "abcdefghijklmnopqrstuvwxyz"
 
 	tasks := make([]string, 0)
@@ -37,12 +33,16 @@ func checkTasks(contestNo string) []string {
 		taskURL := url + "_" + string(alpha[i])
 		err := validateHeader(taskURL)
 		if err != nil {
-			return tasks
+			if len(tasks) == 0 {
+				return nil, err
+			}
+			return tasks, nil
 		}
 		logWrite(SUCCESS, "Access to contest page: "+taskURL)
 		tasks = append(tasks, string(alpha[i]))
 	}
 
+	return tasks, nil
 }
 
 type Status int
