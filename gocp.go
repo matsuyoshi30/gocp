@@ -4,23 +4,54 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 )
+
+func prepare(contestNo string) error {
+	// parse input contest No (and language (if necessarily))
+	err := validateHeader(contestNo)
+	if err != nil {
+		return err
+	}
+	logWrite("[SUCCESS] Access to contest page")
+
+	// make working directory
+	wd, _ := os.Getwd()
+	dir := filepath.Join(wd, contestNo)
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		// collect task list
+		tasks := checkTasks(contestNo)
+		for _, task := range tasks {
+			p := filepath.Join(dir, task)
+			err = os.MkdirAll(p, os.ModePerm)
+			if err != nil {
+				return err
+			}
+			// make template files
+			template := filepath.Join(p, "main.cpp")
+			f, err := os.Create(template)
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+		}
+		logWrite("[SUCCESS] Make working directory")
+
+	}
+
+	// TODO: scrape contest page
+	// scrape task sentence and print it into file
+	// scrape test case input and output, and print them into files
+
+	return nil
+}
 
 func main() {
 	// set subcommand
-	hello := flag.NewFlagSet("hello", flag.ExitOnError)
 
 	// init
 	// make directory and template files (default language is C++)
-	init := flag.NewFlagSet("init", flag.ExitOnError)
-	/// parse input contest No and language (if necessarily)
-	/// make directory
-	/// scrape contest page
-	//// collect task list
-	///// make directory by task name
-	////// scrape task sentence and print it into file
-	////// scrape test case input and output, and print them into files
-	////// make template files
+	prepareC := flag.NewFlagSet("prepare", flag.ExitOnError)
 
 	// info
 	// show contest info
@@ -53,11 +84,8 @@ func main() {
 	}
 
 	switch os.Args[1] {
-	case "hello":
-		hello.Parse(os.Args[1:])
-		fmt.Println("hello")
-	case "init":
-		init.Parse(os.Args[0:])
+	case "prepare":
+		prepareC.Parse(os.Args[2:])
 	case "info":
 		info.Parse(os.Args[0:])
 	case "test":
@@ -66,5 +94,16 @@ func main() {
 		submit.Parse(os.Args[0:])
 	default:
 		flag.Usage()
+	}
+
+	if prepareC.Parsed() {
+		if len(prepareC.Args()) != 1 {
+			fmt.Println("ERROR")
+			return
+		}
+		err := prepare(prepareC.Arg(0))
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
