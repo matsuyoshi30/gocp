@@ -13,7 +13,7 @@ func prepare(contestNo string) error {
 	if err != nil {
 		return err
 	}
-	logWrite("[SUCCESS] Access to contest page")
+	logWrite(SUCCESS, "Access to contest page: "+contestNo)
 
 	// make working directory
 	wd, _ := os.Getwd()
@@ -35,8 +35,7 @@ func prepare(contestNo string) error {
 			}
 			defer f.Close()
 		}
-		logWrite("[SUCCESS] Make working directory")
-
+		logWrite(SUCCESS, "Make working directory")
 	}
 
 	// TODO: scrape contest page

@@ -35,19 +35,30 @@ func checkTasks(contestNo string) []string {
 	url := contestNo + "/tasks/" + contestNo
 	for i := 0; i < len(alpha); i++ {
 		taskURL := url + "_" + string(alpha[i])
-		logWrite("[ACCESS]", taskURL)
 		err := validateHeader(taskURL)
 		if err != nil {
-			logWrite("[INVALID] ", taskURL)
 			return tasks
 		}
-		logWrite("[SUCCESS] Access to", taskURL)
+		logWrite(SUCCESS, "Access to contest page: "+taskURL)
 		tasks = append(tasks, string(alpha[i]))
 	}
 
-	return tasks
 }
 
-func logWrite(str ...string) {
-	fmt.Println(str)
+type Status int
+
+const (
+	SUCCESS Status = iota
+	FAILED
+)
+
+func logWrite(st Status, str string) {
+	switch st {
+	case SUCCESS:
+		fmt.Println("[SUCCESS]", str)
+	case FAILED:
+		fmt.Println("[FAILED]", str)
+	default:
+		fmt.Println(str)
+	}
 }
