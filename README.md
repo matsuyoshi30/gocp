@@ -5,6 +5,9 @@ Command line tool for the competitive programming written in Go
 ### Usage
 
 ```sh 
+# Login
+$ gocp login
+
 # Make directory and template files.
 $ gocp init [contest No]
 
@@ -19,7 +22,7 @@ $ gocp info
 $ gocp test
 
 # Submit (e.g. task A).
-$ gocp submit
+$ gocp submit main.cpp
 ```
 
 ### License
