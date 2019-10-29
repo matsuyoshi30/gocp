@@ -11,10 +11,8 @@ import (
 func main() {
 	// TODO: flag.Usage() 設定
 
-	// set subcommand
-
-	// TODO: login
-
+	// login
+	loginCommand := flag.NewFlagSet("login", flag.ExitOnError)
 	// make directory and template files (default language is C++)
 	prepareCommand := flag.NewFlagSet("prepare", flag.ExitOnError)
 	// show contest info
@@ -30,6 +28,8 @@ func main() {
 	}
 
 	switch os.Args[1] {
+	case "login":
+		loginCommand.Parse(os.Args[0:])
 	case "prepare":
 		prepareCommand.Parse(os.Args[2:])
 	case "info":
@@ -41,6 +41,19 @@ func main() {
 	default:
 		flag.Usage()
 		return
+	}
+
+	if loginCommand.Parsed() {
+		var username string
+		fmt.Printf(">username ")
+		fmt.Scan(&username)
+		var password string
+		fmt.Printf(">password ")
+		fmt.Scan(&password)
+		err := subcommand.Login(username, password)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 	if prepareCommand.Parsed() {

@@ -6,12 +6,8 @@ import (
 	"net/http"
 )
 
-const (
-	baseURL = "https://atcoder.jp/contests/"
-)
-
-func ValidateHeader(str string) error {
-	resp, err := http.Head(baseURL + str)
+func ValidateHeader(url string) error {
+	resp, err := http.Head(url)
 	if err != nil {
 		return err
 	}

@@ -4,9 +4,26 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/matsuyoshi30/gocp/client"
+	"github.com/matsuyoshi30/gocp/config"
 	"github.com/matsuyoshi30/gocp/contest"
 	"github.com/matsuyoshi30/gocp/util"
 )
+
+func Login(username, password string) error {
+	// check config
+	err := config.IsExistConfig(config.ConfigDir, config.ConfigFile)
+	if err == nil {
+		if ok, err := client.CheckSession(config.ConfigFile); err != nil {
+			return err
+		} else if ok { // already login
+			return nil
+		}
+	}
+
+	// login and create config to save cookie
+	return contest.Login(username, password)
+}
 
 func Prepare(contestNo string) error {
 	// parse input contestNo
