@@ -9,7 +9,7 @@ import (
 
 var (
 	ConfigDir  = os.Getenv("HOME") + "/Library/Preferences"
-	ConfigFile = "config.json"
+	ConfigFile = "gocp.atcoder.config.json"
 )
 
 // save cookie info
@@ -35,7 +35,7 @@ func (c *Config) CreateConfig(filename string) error {
 }
 
 func (c *Config) ReadConfig(filename string) ([]byte, error) {
-	f, err := c.OpenConfig("config.json")
+	f, err := c.OpenConfig(filename)
 	if err != nil {
 		return nil, err
 	}
