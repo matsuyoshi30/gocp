@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/matsuyoshi30/gocp/subcommand"
-	"github.com/matsuyoshi30/gocp/util"
 )
 
 func main() {
@@ -45,12 +44,7 @@ func main() {
 	}
 
 	if loginCommand.Parsed() {
-		username, password, err := util.GetCredentials()
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		err = subcommand.Login(username, password)
+		err := subcommand.Login()
 		if err != nil {
 			fmt.Println(err)
 			return

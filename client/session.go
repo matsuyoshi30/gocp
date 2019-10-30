@@ -51,5 +51,5 @@ func CheckSession(filename string) (bool, error) { // true ... already login
 	}
 	defer resp.Body.Close()
 
-	return false, nil
+	return true, nil
 }

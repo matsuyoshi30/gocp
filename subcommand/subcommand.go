@@ -10,18 +10,25 @@ import (
 	"github.com/matsuyoshi30/gocp/util"
 )
 
-func Login(username, password string) error {
+func Login() error {
 	// check config
 	err := config.IsExistConfig(config.ConfigDir, config.ConfigFile)
 	if err == nil {
-		if ok, err := client.CheckSession(config.ConfigFile); err != nil {
+		ok, err := client.CheckSession(config.ConfigFile)
+		if err != nil {
 			return err
-		} else if ok { // already login
+		}
+		if ok { // already login
 			return nil
 		}
 	}
 
 	// login and create config to save cookie
+	username, password, err := util.GetCredentials()
+	if err != nil {
+		return err
+	}
+
 	return contest.Login(username, password)
 }
 
