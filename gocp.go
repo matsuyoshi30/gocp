@@ -65,6 +65,7 @@ func main() {
 		err := subcommand.Prepare(prepareCommand.Arg(0))
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 	}
 
