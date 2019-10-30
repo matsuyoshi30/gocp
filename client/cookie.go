@@ -18,7 +18,7 @@ func SaveCookie(filename string, cookie *http.Cookie) error {
 	return c.WriteConfig(filename, data)
 }
 
-func LoadCookies(filename string) ([]http.Cookie, error) {
+func LoadCookies(filename string) (*http.Cookie, error) {
 	c := config.NewConfig()
 	// read config.json
 	data, err := c.ReadConfig(filename)
@@ -27,11 +27,11 @@ func LoadCookies(filename string) ([]http.Cookie, error) {
 	}
 
 	// return cookie
-	var cookies []http.Cookie
-	err = json.Unmarshal(data, &cookies)
+	var cookie *http.Cookie
+	err = json.Unmarshal(data, &cookie)
 	if err != nil {
 		return nil, err
 	}
 
-	return cookies, nil
+	return cookie, nil
 }

@@ -72,9 +72,14 @@ func Login(username, password string) error {
 	}
 
 	// check response and save cookie
-	err = client.SaveCookie(config.ConfigFile, resp.Cookies()[1])
-	if err != nil {
-		return err
+	for _, c := range resp.Cookies() {
+		if c.Value != "" {
+			err = client.SaveCookie(config.ConfigFile, c)
+			if err != nil {
+				return err
+			}
+			break
+		}
 	}
 
 	return nil

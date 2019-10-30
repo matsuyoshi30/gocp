@@ -25,7 +25,7 @@ func NewClient() (*http.Client, error) {
 }
 
 func CheckSession(filename string) (bool, error) { // true ... already login
-	cookies, err := LoadCookies(filename)
+	cookie, err := LoadCookies(filename)
 	if err != nil {
 		return false, err
 	}
@@ -40,12 +40,7 @@ func CheckSession(filename string) (bool, error) { // true ... already login
 
 	// make request and add cookie
 	req, err := http.NewRequest("GET", "https://atcoder.jp/contests/abc001/submit", nil)
-	for _, c := range cookies {
-		if c.Value != "" {
-			req.AddCookie(&c)
-			break
-		}
-	}
+	req.AddCookie(cookie)
 
 	// GET submit page
 	// check redirect (if redirected, not login yet)
