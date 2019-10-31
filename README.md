@@ -11,6 +11,9 @@ $ gocp login
 # Make directory and template files.
 $ gocp init [contest No]
 
+# Check session status
+$ gocp session
+
 $ cd ./[contest No]/A
 
 # Show the contest info (e.g. task A).
