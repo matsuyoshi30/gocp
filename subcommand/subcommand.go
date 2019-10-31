@@ -32,6 +32,17 @@ func Login() error {
 	return contest.Login(username, password)
 }
 
+func Session() (string, error) {
+	ok, err := client.CheckSession(config.ConfigFile)
+	if err != nil {
+		return "", err
+	}
+	if ok {
+		return "OK", nil
+	}
+	return "NG", nil
+}
+
 func Prepare(contestNo string) error {
 	// parse input contestNo
 	err := util.ValidateHeader(contestNo)

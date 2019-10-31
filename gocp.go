@@ -13,6 +13,8 @@ func main() {
 
 	// login
 	loginCommand := flag.NewFlagSet("login", flag.ExitOnError)
+	// check session
+	sessionCommand := flag.NewFlagSet("session", flag.ExitOnError)
 	// make directory and template files (default language is C++)
 	prepareCommand := flag.NewFlagSet("prepare", flag.ExitOnError)
 	// show contest info
@@ -30,6 +32,8 @@ func main() {
 	switch os.Args[1] {
 	case "login":
 		loginCommand.Parse(os.Args[0:])
+	case "session":
+		sessionCommand.Parse(os.Args[0:])
 	case "prepare":
 		prepareCommand.Parse(os.Args[2:])
 	case "info":
@@ -49,6 +53,17 @@ func main() {
 			fmt.Println(err)
 			return
 		}
+	}
+
+	if sessionCommand.Parsed() {
+		fmt.Println("Check session...")
+		res, err := subcommand.Session()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(res)
+		return
 	}
 
 	if prepareCommand.Parsed() {
