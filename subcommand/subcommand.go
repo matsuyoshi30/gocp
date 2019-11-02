@@ -32,6 +32,10 @@ func Login() error {
 }
 
 func Session() (string, error) {
+	if ok := config.IsExistConfig(config.ConfigDir, config.ConfigFile); !ok {
+		return "NG", nil
+	}
+
 	ok, err := client.CheckSession(config.ConfigFile)
 	if err != nil {
 		return "", err
