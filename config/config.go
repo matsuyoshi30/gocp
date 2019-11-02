@@ -23,8 +23,8 @@ func NewConfig() *Config {
 
 func (c *Config) CreateConfig(filename string) error {
 	// check config dir
-	if err := IsExistConfig(c.Path, filename); err != nil {
-		_, err = os.Create(filepath.Join(c.Path, filename))
+	if ok := IsExistConfig(c.Path, filename); !ok {
+		_, err := os.Create(filepath.Join(c.Path, filename))
 		if err != nil {
 			return err
 		}
@@ -51,10 +51,7 @@ func (c *Config) WriteConfig(filename string, data []byte) error {
 	return ioutil.WriteFile(filepath.Join(c.Path, filename), data, 0644)
 }
 
-func IsExistConfig(dir, filename string) error {
-	if _, err := os.Stat(filepath.Join(dir, filename)); err != nil {
-		return err
-	}
-
-	return nil
+func IsExistConfig(dir, filename string) bool {
+	_, err := os.Stat(filepath.Join(dir, filename))
+	return err == nil
 }
