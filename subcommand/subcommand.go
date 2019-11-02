@@ -12,7 +12,7 @@ import (
 
 func Login() error {
 	// check config
-	if ok := config.IsExistConfig(config.ConfigDir, config.ConfigFile); !ok {
+	if ok := config.IsExistConfig(config.ConfigDir, config.ConfigFile); ok {
 		ok, err := client.CheckSession(config.ConfigFile)
 		if err != nil {
 			return err
