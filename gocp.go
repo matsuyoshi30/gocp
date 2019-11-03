@@ -8,8 +8,23 @@ import (
 	"github.com/matsuyoshi30/gocp/subcommand"
 )
 
+const USAGE = `NAME:
+   gocp - a cli tool for competitive programming
+USAGE:
+   gocp
+VERSION:
+   0.1.0
+COMMAND:
+   login     Login competitive programming page
+   session   Check session status (login or not login)
+   prepare   Make directory, template file and get test cases for specified task
+   logout    Logout competitive programming page`
+
 func main() {
 	// TODO: flag.Usage() 設定
+	flag.Usage = func() {
+		fmt.Println(USAGE)
+	}
 
 	// login
 	loginCommand := flag.NewFlagSet("login", flag.ExitOnError)
@@ -17,12 +32,6 @@ func main() {
 	sessionCommand := flag.NewFlagSet("session", flag.ExitOnError)
 	// make directory and template files (default language is C++)
 	prepareCommand := flag.NewFlagSet("prepare", flag.ExitOnError)
-	// show contest info
-	info := flag.NewFlagSet("info", flag.ExitOnError)
-	// run test cases
-	test := flag.NewFlagSet("test", flag.ExitOnError)
-	// submit file
-	submitCommand := flag.NewFlagSet("submit", flag.ExitOnError)
 	// logout
 	logoutCommand := flag.NewFlagSet("logout", flag.ExitOnError)
 
@@ -38,12 +47,6 @@ func main() {
 		sessionCommand.Parse(os.Args[0:])
 	case "prepare":
 		prepareCommand.Parse(os.Args[2:])
-	case "info":
-		info.Parse(os.Args[0:])
-	case "test":
-		test.Parse(os.Args[0:])
-	case "submit":
-		submitCommand.Parse(os.Args[2:])
 	case "logout":
 		logoutCommand.Parse(os.Args[0:])
 	default:
