@@ -48,7 +48,7 @@ func Session() (string, error) {
 
 func Prepare(contestNo string) error {
 	// parse input contestNo
-	err := util.ValidateHeader(contestNo)
+	err := util.ValidateHeader("https://atcoder.jp/contests/" + contestNo)
 	if err != nil {
 		return err
 	}
