@@ -9,7 +9,7 @@ Command line tool for the competitive programming written in Go
 $ gocp login
 
 # Make directory and template files.
-$ gocp init [contest No]
+$ gocp prepare [contest No]
 
 # Check session status
 $ gocp session
