@@ -2,6 +2,7 @@ package contest
 
 import (
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -105,4 +106,28 @@ func CheckTasks(contestNo string) ([]string, error) {
 	}
 
 	return tasks, nil
+}
+
+func GetTestCase(contestNo, taskID string) ([]string, error) {
+	url := baseURL + "/contests/" + contestNo + "/tasks/" + contestNo + "_" + taskID
+	util.LogWrite(util.SUCCESS, url)
+	client, err := client.NewClient()
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	b, err := ioutil.ReadAll(resp.Body)
+	// get test cases
+	testcases, err := util.Scrape(string(b), "pre")
+	if err != nil {
+		return nil, err
+	}
+
+	return testcases, nil
 }

@@ -4,12 +4,14 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strings"
 	"syscall"
 
 	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/net/html"
 )
 
 func GetCredentials() (string, string, error) {
@@ -41,6 +43,45 @@ func ValidateHeader(url string) error {
 	}
 
 	return nil
+}
+
+// scrape web page
+
+func Scrape(source, tagtype string) ([]string, error) {
+	LogWrite(SUCCESS, "Start Scraping")
+	tokens := html.NewTokenizer(strings.NewReader(source))
+
+	testcases := make([]string, 0)
+
+	for {
+		tt := tokens.Next()
+
+		switch {
+		case tt == html.ErrorToken:
+			err := tokens.Err()
+			if err == io.EOF {
+				return testcases, nil
+			}
+			return nil, err
+		case tt == html.StartTagToken:
+			tagname, _ := tokens.TagName()
+			if string(tagname) == tagtype {
+				tokentype := tokens.Next()
+				if tokentype == html.TextToken {
+					// TODO: trim whitespaces
+					text := strings.Trim(string(tokens.Text()), "\r\n")
+					if len(text) != 0 { // pre element is not a testcase but input format
+						LogWrite(SUCCESS, "add testcase")
+						testcases = append(testcases, text)
+					}
+				}
+			}
+		default:
+			continue
+		}
+	}
+
+	return testcases, nil
 }
 
 type Status int

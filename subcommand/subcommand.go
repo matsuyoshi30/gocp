@@ -1,8 +1,10 @@
 package subcommand
 
 import (
+	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/matsuyoshi30/gocp/client"
 	"github.com/matsuyoshi30/gocp/config"
@@ -77,6 +79,30 @@ func Prepare(contestNo string) error {
 				return err
 			}
 			defer f.Close()
+
+			testcases, err := contest.GetTestCase(contestNo, task)
+			if err != nil {
+				return err
+			}
+
+			for idx, testcase := range testcases {
+				filename := "out"
+				if idx%2 == 0 { // input
+					filename = "in"
+				}
+				testfile := filepath.Join(p, filename+"_"+strconv.Itoa(idx))
+				util.LogWrite(util.SUCCESS, testfile)
+				tf, err := os.Create(testfile)
+				if err != nil {
+					return err
+				}
+				tf.Close()
+
+				err = ioutil.WriteFile(testfile, []byte(testcase), 0644)
+				if err != nil {
+					return err
+				}
+			}
 		}
 		util.LogWrite(util.SUCCESS, "Make working directory")
 	}
