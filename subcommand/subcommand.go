@@ -120,3 +120,24 @@ func Prepare(contestNo string) error {
 
 	return nil
 }
+
+func Logout() error {
+	// check config
+	if ok := config.IsExistConfig(config.ConfigDir, config.ConfigFile); ok {
+		ok, err := client.CheckSession(config.ConfigFile)
+		if err != nil {
+			util.LogWrite(util.FAILED, "Does not login")
+			return err
+		}
+		if ok {
+			err = os.Remove(filepath.Join(config.ConfigDir, config.ConfigFile))
+			if err != nil {
+				util.LogWrite(util.FAILED, "Failed to remove config file")
+				return err
+			}
+		}
+	}
+
+	util.LogWrite(util.SUCCESS, "Success logout")
+	return nil
+}

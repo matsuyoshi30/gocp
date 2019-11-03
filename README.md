@@ -26,6 +26,9 @@ $ gocp test
 
 # Submit (e.g. task A).
 $ gocp submit main.cpp
+
+# Logout
+$ gocp logout
 ```
 
 ### License

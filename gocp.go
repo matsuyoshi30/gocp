@@ -23,6 +23,8 @@ func main() {
 	test := flag.NewFlagSet("test", flag.ExitOnError)
 	// submit file
 	submitCommand := flag.NewFlagSet("submit", flag.ExitOnError)
+	// logout
+	logoutCommand := flag.NewFlagSet("logout", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
 		flag.Usage()
@@ -42,6 +44,8 @@ func main() {
 		test.Parse(os.Args[0:])
 	case "submit":
 		submitCommand.Parse(os.Args[2:])
+	case "logout":
+		logoutCommand.Parse(os.Args[0:])
 	default:
 		flag.Usage()
 		return
@@ -78,4 +82,11 @@ func main() {
 		}
 	}
 
+	if logoutCommand.Parsed() {
+		err := subcommand.Logout()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
 }
