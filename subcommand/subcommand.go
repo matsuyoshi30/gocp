@@ -30,7 +30,14 @@ func Login() error {
 		return err
 	}
 
-	return contest.Login(username, password)
+	err = contest.Login(username, password)
+	if err != nil {
+		util.LogWrite(util.FAILED, "Failed to login")
+		return err
+	}
+
+	util.LogWrite(util.SUCCESS, "Success login")
+	return nil
 }
 
 func Session() (string, error) {
