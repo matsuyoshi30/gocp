@@ -92,11 +92,12 @@ func CheckTasks(contestNo string) ([]string, error) {
 	url := contestNo + "/tasks/" + contestNo
 	for i := 0; i < len(alpha); i++ {
 		taskURL := url + "_" + string(alpha[i])
-		err := util.ValidateHeader(baseURL + "/" + taskURL)
+		err := util.ValidateHeader(baseURL + "/contests/" + taskURL)
 		if err != nil {
 			if len(tasks) == 0 {
 				return nil, err
 			}
+			// ここまで取得した task を返す
 			return tasks, nil
 		}
 		util.LogWrite(util.SUCCESS, "Access to contest page: "+taskURL)
