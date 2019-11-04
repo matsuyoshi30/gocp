@@ -10,11 +10,11 @@ Currently, only for [AtCoder](https://atcoder.jp/)
 # Login
 $ gocp login
 
-# Make directory and template files.
-$ gocp prepare [contest No]
-
 # Check session status
 $ gocp session
+
+# Make directory and template files.
+$ gocp prepare [contest No]
 
 $ cd ./[contest No]/A
 
