@@ -35,6 +35,8 @@ func main() {
 	prepareCommand := flag.NewFlagSet("prepare", flag.ExitOnError)
 	// run test
 	testCommand := flag.NewFlagSet("test", flag.ExitOnError)
+	// submit code
+	submitCommand := flag.NewFlagSet("submit", flag.ExitOnError)
 	// logout
 	logoutCommand := flag.NewFlagSet("logout", flag.ExitOnError)
 
@@ -52,6 +54,8 @@ func main() {
 		prepareCommand.Parse(os.Args[2:])
 	case "test":
 		testCommand.Parse(os.Args[0:])
+	case "submit":
+		submitCommand.Parse(os.Args[0:])
 	case "logout":
 		logoutCommand.Parse(os.Args[0:])
 	default:
@@ -92,6 +96,14 @@ func main() {
 
 	if testCommand.Parsed() {
 		err := subcommand.RunTest()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+
+	if submitCommand.Parsed() {
+		err := subcommand.Submit()
 		if err != nil {
 			fmt.Println(err)
 			return

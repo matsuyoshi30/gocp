@@ -208,6 +208,66 @@ func RunTest() error {
 	return nil
 }
 
+func Submit() error {
+	util.LogWrite(util.SUCCESS, "Submission")
+
+	wd, err := os.Getwd()
+	if err != nil {
+		util.LogWrite(util.FAILED, "Could not get working dir")
+		return err
+	}
+
+	sourcefile := "main.cpp" // TODO: add support optional
+	if _, err := os.Stat(sourcefile); os.IsNotExist(err) {
+		util.LogWrite(util.FAILED, "Not found source file")
+		return err
+	}
+
+	// read sourcefile
+	f, err := os.Open(filepath.Join(wd, sourcefile))
+	if err != nil {
+		return err
+	}
+	b, err := ioutil.ReadAll(f)
+	if err != nil {
+		return err
+	}
+
+	// check session
+	ok, err := client.CheckSession(config.ConfigFile)
+	if err != nil || !ok {
+		util.LogWrite(util.FAILED, "Session failed")
+		return err
+	}
+
+	// load cookie
+	cookie, err := client.LoadCookies(config.ConfigFile)
+	if err != nil {
+		return err
+	}
+
+	// get taskID and contestNo
+	taskDir, err := os.Open(filepath.Join(wd, ".."))
+	if err != nil {
+		return err
+	}
+	taskID := strings.Trim(strings.TrimPrefix(wd, taskDir.Name()), "/")
+
+	contestDir, err := os.Open(filepath.Join(wd, "../.."))
+	if err != nil {
+		return err
+	}
+	contestNo := strings.TrimSuffix(strings.TrimPrefix(wd, contestDir.Name()+"/"), "/"+taskID)
+
+	// submit
+	err = contest.Submit(cookie, contestNo, taskID, string(b))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func Logout() error {
 	// check config
 	if ok := config.IsExistConfig(config.ConfigDir, config.ConfigFile); ok {

@@ -66,13 +66,34 @@ func Scrape(source, tagtype string) ([]string, error) {
 		case tt == html.StartTagToken:
 			tagname, _ := tokens.TagName()
 			if string(tagname) == tagtype {
-				tokentype := tokens.Next()
-				if tokentype == html.TextToken {
-					// TODO: trim whitespaces
-					text := strings.Trim(string(tokens.Text()), "\r\n")
-					if len(text) != 0 { // pre element is not a testcase but input format
-						LogWrite(SUCCESS, "add testcase")
-						testcases = append(testcases, text)
+				if tagtype == "pre" {
+					tokentype := tokens.Next()
+					if tokentype == html.TextToken {
+						// TODO: trim whitespaces
+						text := strings.Trim(string(tokens.Text()), "\r\n")
+						if len(text) != 0 { // pre element is not a testcase but input format
+							LogWrite(SUCCESS, "add testcase")
+							testcases = append(testcases, text)
+						}
+					}
+				} else if tagtype == "tbody" {
+					// read submission/me page
+					var tokentype html.TokenType
+					for {
+						tokentype = tokens.Next()
+						if tokentype == html.TextToken {
+							text := strings.Trim(string(tokens.Text()), "\r\n")
+							if text == "AC" || text == "WA" || text == "CE" || text == "TLE" || text == "RE" {
+								testcases = append(testcases, text)
+								return testcases, nil
+							}
+						} else if tokentype == html.ErrorToken {
+							err := tokens.Err()
+							if err == io.EOF {
+								return testcases, nil
+							}
+							return nil, err
+						}
 					}
 				}
 			}

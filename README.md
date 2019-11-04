@@ -22,7 +22,7 @@ $ cd ./[contest No]/A
 $ gocp test
 
 # Submit (e.g. task A).
-$ gocp submit main.cpp
+$ gocp submit
 
 # Logout
 $ gocp logout

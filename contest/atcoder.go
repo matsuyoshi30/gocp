@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/matsuyoshi30/gocp/client"
 	"github.com/matsuyoshi30/gocp/config"
@@ -130,4 +131,96 @@ func GetTestCase(contestNo, taskID string) ([]string, error) {
 	}
 
 	return testcases, nil
+}
+
+func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
+	hc, err := client.NewClient()
+	if err != nil {
+		return err
+	}
+
+	// make URL
+	contestURL := baseURL + "/contests/" + contestNo
+
+	submissionURL := contestURL + "/submissions/me"
+
+	// GET cookie and csrf_token
+	var token string
+	if cookie.Value != "" {
+		if strings.Contains(cookie.Value, "csrf_token") {
+			// FIXME
+			rawToken := strings.Split(strings.Split(cookie.Value, "csrf_token%3A")[1], "_TS")[0]
+			rawToken = strings.ReplaceAll(rawToken, "%00", "")
+			token, err = url.QueryUnescape(rawToken)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	// http POST
+	form := url.Values{}
+	form.Add("data.TaskScreenName", contestNo+"_"+taskID)
+	form.Add("data.LanguageId", "3003")
+	form.Add("sourceCode", code)
+	form.Add("csrf_token", token)
+
+	// make request
+	req, err := http.NewRequest("POST", contestURL+"/submit", strings.NewReader(form.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.AddCookie(cookie)
+
+	// do
+	resp, err := hc.Do(req)
+	if err != nil {
+		return err
+	}
+	b, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+
+	// FIXME time sleep
+	util.LogWrite(util.SUCCESS, "Wait judging ...")
+
+	for {
+		req, err = http.NewRequest("GET", submissionURL, nil)
+		if err != nil {
+			return err
+		}
+		req.AddCookie(cookie)
+
+		// do
+		resp, err = hc.Do(req)
+		if err != nil {
+			return err
+		}
+
+		// check result
+		b, err = ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		if err != nil {
+			return err
+		}
+		res, err := util.Scrape(string(b), "tbody")
+		if err != nil {
+			return err
+		}
+
+		if len(res) != 0 {
+			if res[0] == "AC" {
+				util.LogWrite(util.SUCCESS, "PASSED!")
+				break
+			} else if res[0] == "Judging" {
+				time.Sleep(time.Second * 1)
+				continue
+			} else {
+				util.LogWrite(util.FAILED, "FAILED...")
+				break
+			}
+		}
+	}
+
+	return nil
 }
