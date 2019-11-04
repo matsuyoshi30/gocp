@@ -48,7 +48,7 @@ func ValidateHeader(url string) error {
 // scrape web page
 
 func Scrape(source, tagtype string) ([]string, error) {
-	LogWrite(SUCCESS, "Start Scraping")
+	// LogWrite(SUCCESS, "Start Scraping")
 	tokens := html.NewTokenizer(strings.NewReader(source))
 
 	testcases := make([]string, 0)
