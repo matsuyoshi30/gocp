@@ -1,10 +1,14 @@
 package subcommand
 
 import (
+	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/matsuyoshi30/gocp/client"
 	"github.com/matsuyoshi30/gocp/config"
@@ -117,6 +121,89 @@ func Prepare(contestNo string) error {
 	// TODO: scrape contest page
 	// scrape task sentence and print it into file
 	// scrape test case input and output, and print them into files
+
+	return nil
+}
+
+func RunTest() error {
+	util.LogWrite(util.SUCCESS, "Run test")
+
+	wd, err := os.Getwd()
+	if err != nil {
+		util.LogWrite(util.FAILED, "Could not get working dir")
+		return err
+	}
+
+	ef := "./a.out" // executable file
+	if _, err := os.Stat(ef); os.IsNotExist(err) {
+		util.LogWrite(util.FAILED, "Not found executable file")
+		return err
+	}
+
+	i := 0
+	cnt := 1
+	for {
+		infn := "in_" + strconv.Itoa(i)
+		outfn := "out_" + strconv.Itoa(i+1)
+
+		if _, err = os.Stat(infn); os.IsNotExist(err) { // check input file exist
+			break
+		}
+		if _, err = os.Stat(outfn); os.IsNotExist(err) { // check output file exist
+			break
+		}
+
+		// read input file
+		inf, err := os.Open(filepath.Join(wd, infn))
+		if err != nil {
+			return err
+		}
+		infb, err := ioutil.ReadAll(inf)
+		if err != nil {
+			return err
+		}
+		inval := string(infb)
+
+		// read output file
+		outf, err := os.Open(filepath.Join(wd, outfn))
+		if err != nil {
+			return err
+		}
+		outfb, err := ioutil.ReadAll(outf)
+		if err != nil {
+			return err
+		}
+		outval := string(outfb)
+
+		// execution
+		cmd := exec.Command(ef)
+		stdin, err := cmd.StdinPipe()
+		if err != nil {
+			return err
+		}
+		io.WriteString(stdin, inval)
+		stdin.Close()
+		out, err := cmd.Output()
+		if err != nil {
+			return err
+		}
+		output := strings.Trim(string(out), "\r\n")
+
+		res := fmt.Sprintf("Case No.%d", cnt)
+		comp := strings.Compare(outval, output)
+		if comp != 0 {
+			res = fmt.Sprintf("%s: expected %s, but got %s", res, outval, output)
+			util.LogWrite(util.FAILED, res)
+		} else {
+			res = fmt.Sprintf("%s: PASSED! expected %s, and got %s", res, outval, output)
+			util.LogWrite(util.SUCCESS, res)
+		}
+
+		i = i + 2
+		cnt++
+	}
+
+	// run test
 
 	return nil
 }
