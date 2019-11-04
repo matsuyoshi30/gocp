@@ -16,10 +16,7 @@ $ gocp session
 
 $ cd ./[contest No]/A
 
-# Show the contest info (e.g. task A).
-$ gocp info
-
-# If you use language need to compile, you do it.
+# Solve task ( If you use language need to compile, you do it )
 
 # Run test cases (e.g. task A).
 $ gocp test
