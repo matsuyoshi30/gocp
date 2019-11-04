@@ -1,6 +1,8 @@
-# gocp
+# [WIP] gocp
 
-Command line tool for the competitive programming written in Go
+**SUPER ROUGH** Command line tool for the competitive programming written in Go
+
+Currently, only for [AtCoder](https://atcoder.jp/)
 
 ### Usage
 
