@@ -2,10 +2,8 @@ package util
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"strings"
 	"syscall"
@@ -29,20 +27,6 @@ func GetCredentials() (string, string, error) {
 	password := string(bytePassword)
 
 	return strings.TrimSpace(username), strings.TrimSpace(password), nil
-}
-
-func ValidateHeader(url string) error {
-	resp, err := http.Head(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return errors.New("ERROR: status code")
-	}
-
-	return nil
 }
 
 // scrape web page

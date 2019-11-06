@@ -94,7 +94,7 @@ func CheckTasks(contestNo string) ([]string, error) {
 	url := contestNo + "/tasks/" + contestNo
 	for i := 0; i < len(alpha); i++ {
 		taskURL := url + "_" + string(alpha[i])
-		err := util.ValidateHeader(baseURL + "/contests/" + taskURL)
+		err := client.ValidateHeader(baseURL + "/contests/" + taskURL)
 		if err != nil {
 			if len(tasks) == 0 {
 				return nil, err
