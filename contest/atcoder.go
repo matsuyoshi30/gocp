@@ -172,7 +172,6 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.AddCookie(cookie)
 
-	// do
 	resp, err := hc.Do(req)
 	if err != nil {
 		return err
@@ -190,7 +189,6 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 		}
 		req.AddCookie(cookie)
 
-		// do
 		resp, err = hc.Do(req)
 		if err != nil {
 			return err
@@ -212,7 +210,7 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 				util.LogWrite(util.SUCCESS, "PASSED!")
 				break
 			} else if res[0] == "Judging" {
-				time.Sleep(time.Second * 1)
+				time.Sleep(time.Second * 1) // FIXMEEEE
 				continue
 			} else {
 				util.LogWrite(util.FAILED, "FAILED...")

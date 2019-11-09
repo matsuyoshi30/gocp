@@ -29,10 +29,7 @@ func GetCredentials() (string, string, error) {
 	return strings.TrimSpace(username), strings.TrimSpace(password), nil
 }
 
-// scrape web page
-
 func Scrape(source, tagtype string) ([]string, error) {
-	// LogWrite(SUCCESS, "Start Scraping")
 	tokens := html.NewTokenizer(strings.NewReader(source))
 
 	testcases := make([]string, 0)
@@ -50,17 +47,15 @@ func Scrape(source, tagtype string) ([]string, error) {
 		case tt == html.StartTagToken:
 			tagname, _ := tokens.TagName()
 			if string(tagname) == tagtype {
-				if tagtype == "pre" {
+				if tagtype == "pre" { // read contest task page
 					tokentype := tokens.Next()
 					if tokentype == html.TextToken {
-						// TODO: trim whitespaces
 						text := strings.Trim(string(tokens.Text()), "\r\n")
 						if len(text) != 0 { // pre element is not a testcase but input format
 							testcases = append(testcases, text)
 						}
 					}
-				} else if tagtype == "tbody" {
-					// read submission/me page
+				} else if tagtype == "tbody" { // read submission/me page
 					var tokentype html.TokenType
 					for {
 						tokentype = tokens.Next()

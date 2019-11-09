@@ -23,7 +23,6 @@ COMMAND:
    logout    Logout competitive programming page`
 
 func main() {
-	// TODO: flag.Usage() 設定
 	flag.Usage = func() {
 		fmt.Println(USAGE)
 	}

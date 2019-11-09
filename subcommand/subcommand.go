@@ -120,9 +120,7 @@ func Prepare(contestNo string) error {
 		util.LogWrite(util.SUCCESS, "Make working directory", dir)
 	}
 
-	// TODO: scrape contest page
-	// scrape task sentence and print it into file
-	// scrape test case input and output, and print them into files
+	// TODO: scrape task sentence and print it into file
 
 	return nil
 }
@@ -204,8 +202,6 @@ func RunTest() error {
 		i = i + 2
 		cnt++
 	}
-
-	// run test
 
 	return nil
 }
