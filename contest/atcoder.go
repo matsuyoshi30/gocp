@@ -102,7 +102,6 @@ func CheckTasks(contestNo string) ([]string, error) {
 			// ここまで取得した task を返す
 			return tasks, nil
 		}
-		util.LogWrite(util.SUCCESS, "Access to contest page: "+taskURL)
 		tasks = append(tasks, string(alpha[i]))
 	}
 
@@ -111,7 +110,7 @@ func CheckTasks(contestNo string) ([]string, error) {
 
 func GetTestCase(contestNo, taskID string) ([]string, error) {
 	url := baseURL + "/contests/" + contestNo + "/tasks/" + contestNo + "_" + taskID
-	util.LogWrite(util.SUCCESS, url)
+	util.LogWrite(util.INFO, "Task Page URL", url)
 	client, err := client.NewClient()
 	if err != nil {
 		return nil, err
@@ -182,7 +181,7 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 	resp.Body.Close()
 
 	// FIXME time sleep
-	util.LogWrite(util.SUCCESS, "Wait judging ...")
+	util.LogWrite(util.INFO, "Wait judging ...")
 
 	for {
 		req, err = http.NewRequest("GET", submissionURL, nil)

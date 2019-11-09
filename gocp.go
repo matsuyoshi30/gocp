@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/matsuyoshi30/gocp/subcommand"
+	"github.com/matsuyoshi30/gocp/util"
 )
 
 const USAGE = `NAME:
@@ -66,19 +67,19 @@ func main() {
 	if loginCommand.Parsed() {
 		err := subcommand.Login()
 		if err != nil {
-			fmt.Println(err)
+			util.LogWrite(util.FAILED, err.Error())
 			return
 		}
 	}
 
 	if sessionCommand.Parsed() {
-		fmt.Println("Check session...")
+		util.LogWrite(util.INFO, "Checking session ...")
 		res, err := subcommand.Session()
 		if err != nil {
-			fmt.Println(err)
+			util.LogWrite(util.FAILED, err.Error())
 			return
 		}
-		fmt.Println(res)
+		util.LogWrite(util.SUCCESS, res)
 		return
 	}
 
@@ -89,7 +90,7 @@ func main() {
 		}
 		err := subcommand.Prepare(prepareCommand.Arg(0))
 		if err != nil {
-			fmt.Println(err)
+			util.LogWrite(util.FAILED, err.Error())
 			return
 		}
 	}
@@ -97,7 +98,7 @@ func main() {
 	if testCommand.Parsed() {
 		err := subcommand.RunTest()
 		if err != nil {
-			fmt.Println(err)
+			util.LogWrite(util.FAILED, err.Error())
 			return
 		}
 	}
@@ -105,7 +106,7 @@ func main() {
 	if submitCommand.Parsed() {
 		err := subcommand.Submit()
 		if err != nil {
-			fmt.Println(err)
+			util.LogWrite(util.FAILED, err.Error())
 			return
 		}
 	}
@@ -113,7 +114,7 @@ func main() {
 	if logoutCommand.Parsed() {
 		err := subcommand.Logout()
 		if err != nil {
-			fmt.Println(err)
+			util.LogWrite(util.FAILED, err.Error())
 			return
 		}
 	}
