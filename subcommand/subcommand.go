@@ -61,11 +61,11 @@ func Session() (string, error) {
 
 func Prepare(contestNo string) error {
 	// parse input contestNo
-	err := util.ValidateHeader("https://atcoder.jp/contests/" + contestNo)
+	err := client.ValidateHeader("https://atcoder.jp/contests/" + contestNo)
 	if err != nil {
 		return err
 	}
-	util.LogWrite(util.SUCCESS, "Access to contest page: "+contestNo)
+	util.LogWrite(util.SUCCESS, "Contest Page", "https://atcoder.jp/contests/"+contestNo)
 
 	// make working directory
 	wd, _ := os.Getwd()
@@ -101,8 +101,10 @@ func Prepare(contestNo string) error {
 				if idx%2 == 0 { // input
 					filename = "in"
 				}
-				testfile := filepath.Join(p, filename+"_"+strconv.Itoa(idx))
-				util.LogWrite(util.SUCCESS, testfile)
+				filename = filename + "_" + strconv.Itoa(idx)
+
+				testfile := filepath.Join(p, filename)
+				util.LogWrite(util.SUCCESS, "Add testcase", filepath.Join(contestNo, task, filename))
 				tf, err := os.Create(testfile)
 				if err != nil {
 					return err
@@ -115,12 +117,10 @@ func Prepare(contestNo string) error {
 				}
 			}
 		}
-		util.LogWrite(util.SUCCESS, "Make working directory")
+		util.LogWrite(util.SUCCESS, "Make working directory", dir)
 	}
 
-	// TODO: scrape contest page
-	// scrape task sentence and print it into file
-	// scrape test case input and output, and print them into files
+	// TODO: scrape task sentence and print it into file
 
 	return nil
 }
@@ -202,8 +202,6 @@ func RunTest() error {
 		i = i + 2
 		cnt++
 	}
-
-	// run test
 
 	return nil
 }

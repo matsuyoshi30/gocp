@@ -24,6 +24,20 @@ func NewClient() (*http.Client, error) {
 	return client, nil
 }
 
+func ValidateHeader(url string) error {
+	resp, err := http.Head(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return errors.New("ERROR: status code")
+	}
+
+	return nil
+}
+
 func CheckSession(filename string) (bool, error) { // true ... already login
 	cookie, err := LoadCookies(filename)
 	if err != nil {

@@ -2,10 +2,8 @@ package util
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"strings"
 	"syscall"
@@ -31,24 +29,7 @@ func GetCredentials() (string, string, error) {
 	return strings.TrimSpace(username), strings.TrimSpace(password), nil
 }
 
-func ValidateHeader(url string) error {
-	resp, err := http.Head(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return errors.New("ERROR: status code")
-	}
-
-	return nil
-}
-
-// scrape web page
-
 func Scrape(source, tagtype string) ([]string, error) {
-	// LogWrite(SUCCESS, "Start Scraping")
 	tokens := html.NewTokenizer(strings.NewReader(source))
 
 	testcases := make([]string, 0)
@@ -66,18 +47,15 @@ func Scrape(source, tagtype string) ([]string, error) {
 		case tt == html.StartTagToken:
 			tagname, _ := tokens.TagName()
 			if string(tagname) == tagtype {
-				if tagtype == "pre" {
+				if tagtype == "pre" { // read contest task page
 					tokentype := tokens.Next()
 					if tokentype == html.TextToken {
-						// TODO: trim whitespaces
 						text := strings.Trim(string(tokens.Text()), "\r\n")
 						if len(text) != 0 { // pre element is not a testcase but input format
-							LogWrite(SUCCESS, "add testcase")
 							testcases = append(testcases, text)
 						}
 					}
-				} else if tagtype == "tbody" {
-					// read submission/me page
+				} else if tagtype == "tbody" { // read submission/me page
 					var tokentype html.TokenType
 					for {
 						tokentype = tokens.Next()
@@ -110,15 +88,23 @@ type Status int
 const (
 	SUCCESS Status = iota
 	FAILED
+	INFO
 )
 
-func LogWrite(st Status, str string) {
+func LogWrite(st Status, str ...string) {
+	out := ""
+	for _, s := range str {
+		out = strings.Join([]string{out, " "}, s)
+	}
+
 	switch st {
 	case SUCCESS:
-		fmt.Println("[SUCCESS]", str)
+		fmt.Printf("\x1b[34m%s %s\x1b[0m\n", "[SUCCESS]", out)
 	case FAILED:
-		fmt.Println("[FAILED]", str)
+		fmt.Printf("\x1b[31m%s %s\x1b[0m\n", "[FAILED]", out)
+	case INFO:
+		fmt.Printf("\x1b[32m%s %s\x1b[0m\n", "[INFO]", out)
 	default:
-		fmt.Println(str)
+		fmt.Printf("\x1b[37m%s\x1b[0m\n", out)
 	}
 }

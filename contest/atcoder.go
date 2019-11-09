@@ -94,7 +94,7 @@ func CheckTasks(contestNo string) ([]string, error) {
 	url := contestNo + "/tasks/" + contestNo
 	for i := 0; i < len(alpha); i++ {
 		taskURL := url + "_" + string(alpha[i])
-		err := util.ValidateHeader(baseURL + "/contests/" + taskURL)
+		err := client.ValidateHeader(baseURL + "/contests/" + taskURL)
 		if err != nil {
 			if len(tasks) == 0 {
 				return nil, err
@@ -102,7 +102,6 @@ func CheckTasks(contestNo string) ([]string, error) {
 			// ここまで取得した task を返す
 			return tasks, nil
 		}
-		util.LogWrite(util.SUCCESS, "Access to contest page: "+taskURL)
 		tasks = append(tasks, string(alpha[i]))
 	}
 
@@ -111,7 +110,7 @@ func CheckTasks(contestNo string) ([]string, error) {
 
 func GetTestCase(contestNo, taskID string) ([]string, error) {
 	url := baseURL + "/contests/" + contestNo + "/tasks/" + contestNo + "_" + taskID
-	util.LogWrite(util.SUCCESS, url)
+	util.LogWrite(util.INFO, "Task Page URL", url)
 	client, err := client.NewClient()
 	if err != nil {
 		return nil, err
@@ -173,7 +172,6 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.AddCookie(cookie)
 
-	// do
 	resp, err := hc.Do(req)
 	if err != nil {
 		return err
@@ -182,7 +180,7 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 	resp.Body.Close()
 
 	// FIXME time sleep
-	util.LogWrite(util.SUCCESS, "Wait judging ...")
+	util.LogWrite(util.INFO, "Wait judging ...")
 
 	for {
 		req, err = http.NewRequest("GET", submissionURL, nil)
@@ -191,7 +189,6 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 		}
 		req.AddCookie(cookie)
 
-		// do
 		resp, err = hc.Do(req)
 		if err != nil {
 			return err
@@ -213,7 +210,7 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 				util.LogWrite(util.SUCCESS, "PASSED!")
 				break
 			} else if res[0] == "Judging" {
-				time.Sleep(time.Second * 1)
+				time.Sleep(time.Second * 1) // FIXMEEEE
 				continue
 			} else {
 				util.LogWrite(util.FAILED, "FAILED...")
