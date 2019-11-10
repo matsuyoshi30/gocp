@@ -1,7 +1,6 @@
 package util
 
 import (
-	"bytes"
 	"testing"
 )
 
@@ -15,6 +14,21 @@ func TestScrape(t *testing.T) {
 			"",
 			"",
 			[]string{},
+		},
+		{
+			"<html><head></head><body></body></html>",
+			"body",
+			[]string{},
+		},
+		{
+			"<html><head></head><body><pre>1</pre><pre>2</pre></body></html>",
+			"pre",
+			[]string{"1", "2"},
+		},
+		{
+			"<html><head></head><body><tbody><th></th><td>AC</td></tbody></body></html>",
+			"tbody",
+			[]string{"AC"},
 		},
 	}
 
