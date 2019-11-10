@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 	"syscall"
 
@@ -12,8 +11,8 @@ import (
 	"golang.org/x/net/html"
 )
 
-func GetCredentials() (string, string, error) {
-	reader := bufio.NewReader(os.Stdin)
+func GetCredentials(input io.Reader) (string, string, error) {
+	reader := bufio.NewReader(input)
 
 	fmt.Print("Enter Username: ")
 	username, _ := reader.ReadString('\n')
@@ -99,12 +98,12 @@ func LogWrite(st Status, str ...string) {
 
 	switch st {
 	case SUCCESS:
-		fmt.Printf("\x1b[34m%s %s\x1b[0m\n", "[SUCCESS]", out)
+		fmt.Printf("\x1b[34m%s\x1b[0m %s\n", "[SUCCESS]", out)
 	case FAILED:
-		fmt.Printf("\x1b[31m%s %s\x1b[0m\n", "[FAILED]", out)
+		fmt.Printf("\x1b[31m%s\x1b[0m %s\n", "[FAILED]", out)
 	case INFO:
-		fmt.Printf("\x1b[32m%s %s\x1b[0m\n", "[INFO]", out)
+		fmt.Printf("\x1b[32m%s\x1b[0m %s\n", "[INFO]", out)
 	default:
-		fmt.Printf("\x1b[37m%s\x1b[0m\n", out)
+		fmt.Printf("%s", out)
 	}
 }

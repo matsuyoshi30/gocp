@@ -24,12 +24,13 @@ func Login() error {
 			return err
 		}
 		if ok { // already login
+			util.LogWrite(util.INFO, "Already login")
 			return nil
 		}
 	}
 
 	// login and create config to save cookie
-	username, password, err := util.GetCredentials()
+	username, password, err := util.GetCredentials(os.Stdin)
 	if err != nil {
 		return err
 	}
