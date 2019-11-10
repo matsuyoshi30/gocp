@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 	"syscall"
 
@@ -12,8 +11,8 @@ import (
 	"golang.org/x/net/html"
 )
 
-func GetCredentials() (string, string, error) {
-	reader := bufio.NewReader(os.Stdin)
+func GetCredentials(input io.Reader) (string, string, error) {
+	reader := bufio.NewReader(input)
 
 	fmt.Print("Enter Username: ")
 	username, _ := reader.ReadString('\n')
