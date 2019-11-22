@@ -98,11 +98,11 @@ func LogWrite(st Status, str ...string) {
 
 	switch st {
 	case SUCCESS:
-		fmt.Printf("\x1b[34m%s\x1b[0m %s\n", "[SUCCESS]", out)
+		fmt.Printf("%s\x1b[34m%-7s\x1b[0m%s %s\n", "[", "SUCCESS", "]", out)
 	case FAILED:
-		fmt.Printf("\x1b[31m%s\x1b[0m %s\n", "[FAILED]", out)
+		fmt.Printf("%s\x1b[31m%-7s\x1b[0m%s %s\n", "[", "FAILED", "]", out)
 	case INFO:
-		fmt.Printf("\x1b[32m%s\x1b[0m %s\n", "[INFO]", out)
+		fmt.Printf("%s\x1b[32m%-7s\x1b[0m%s %s\n", "[", "INFO", "]", out)
 	default:
 		fmt.Printf("%s", out)
 	}
