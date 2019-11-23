@@ -2,6 +2,7 @@ package util
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -71,6 +72,13 @@ func Scrape(source, tagtype string) ([]string, error) {
 							}
 							return nil, err
 						}
+					}
+				} else if tagtype == "title" {
+					tokens.Next()
+					if strings.Trim(string(tokens.Text()), "\r\n") == "ログイン - AtCoder" {
+						return nil, errors.New("Does not login")
+					} else {
+						return nil, nil
 					}
 				}
 			}
