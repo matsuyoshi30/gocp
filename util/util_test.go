@@ -51,10 +51,8 @@ func TestScrape(t *testing.T) {
 
 	for _, tt := range testcase {
 		actual, err := Scrape(tt.source, tt.tagtype)
-		if tt.err != nil {
-			if tt.err != err {
-				t.Errorf("Error %v\n", err)
-			}
+		if tt.err != err {
+			t.Errorf("Error %v\n", err)
 		}
 
 		if len(tt.output) != len(actual) {

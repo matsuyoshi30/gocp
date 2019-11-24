@@ -68,7 +68,6 @@ func Login(username, password string) error {
 	if err != nil {
 		return err
 	}
-	resp.Body.Close()
 
 	if resp.StatusCode != 200 {
 		return errors.New("unexpected status code")
@@ -78,6 +77,7 @@ func Login(username, password string) error {
 	if err != nil {
 		return err
 	}
+	resp.Body.Close()
 	_, err = util.Scrape(string(b), "title")
 	if err != nil {
 		return err
