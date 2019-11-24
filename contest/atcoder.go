@@ -69,8 +69,18 @@ func Login(username, password string) error {
 		return err
 	}
 	resp.Body.Close()
+
 	if resp.StatusCode != 200 {
-		return errors.New("invalid login POST")
+		return errors.New("unexpected status code")
+	}
+	// if input wrong id or password, response status code is 200
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	_, err = util.Scrape(string(b), "title")
+	if err != nil {
+		return err
 	}
 
 	// check response and save cookie

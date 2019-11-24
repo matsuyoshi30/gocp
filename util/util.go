@@ -2,6 +2,7 @@ package util
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -28,10 +29,12 @@ func GetCredentials(input io.Reader) (string, string, error) {
 	return strings.TrimSpace(username), strings.TrimSpace(password), nil
 }
 
+var NotLoginError = errors.New("Does not login")
+
 func Scrape(source, tagtype string) ([]string, error) {
 	tokens := html.NewTokenizer(strings.NewReader(source))
 
-	testcases := make([]string, 0)
+	ret := make([]string, 0)
 
 	for {
 		tt := tokens.Next()
@@ -40,7 +43,7 @@ func Scrape(source, tagtype string) ([]string, error) {
 		case tt == html.ErrorToken:
 			err := tokens.Err()
 			if err == io.EOF {
-				return testcases, nil
+				return ret, nil
 			}
 			return nil, err
 		case tt == html.StartTagToken:
@@ -51,7 +54,7 @@ func Scrape(source, tagtype string) ([]string, error) {
 					if tokentype == html.TextToken {
 						text := strings.Trim(string(tokens.Text()), "\r\n")
 						if len(text) != 0 { // pre element is not a testcase but input format
-							testcases = append(testcases, text)
+							ret = append(ret, text)
 						}
 					}
 				} else if tagtype == "tbody" { // read submission/me page
@@ -61,16 +64,23 @@ func Scrape(source, tagtype string) ([]string, error) {
 						if tokentype == html.TextToken {
 							text := strings.Trim(string(tokens.Text()), "\r\n")
 							if text == "AC" || text == "WA" || text == "CE" || text == "TLE" || text == "RE" {
-								testcases = append(testcases, text)
-								return testcases, nil
+								ret = append(ret, text)
+								return ret, nil
 							}
 						} else if tokentype == html.ErrorToken {
 							err := tokens.Err()
 							if err == io.EOF {
-								return testcases, nil
+								return ret, nil
 							}
 							return nil, err
 						}
+					}
+				} else if tagtype == "title" {
+					tokens.Next()
+					if strings.Trim(string(tokens.Text()), "\r\n") == "ログイン - AtCoder" {
+						return nil, NotLoginError
+					} else {
+						return nil, nil
 					}
 				}
 			}
@@ -79,7 +89,7 @@ func Scrape(source, tagtype string) ([]string, error) {
 		}
 	}
 
-	return testcases, nil
+	return ret, nil
 }
 
 type Status int
@@ -98,12 +108,12 @@ func LogWrite(st Status, str ...string) {
 
 	switch st {
 	case SUCCESS:
-		fmt.Printf("\x1b[34m%s\x1b[0m %s\n", "[SUCCESS]", out)
+		fmt.Printf("[\x1b[34m%s\x1b[0m] %s\n", "SUCCESS", out)
 	case FAILED:
-		fmt.Printf("\x1b[31m%s\x1b[0m %s\n", "[FAILED]", out)
+		fmt.Printf("[\x1b[31m%s\x1b[0m] %s\n", "FAILED", out)
 	case INFO:
-		fmt.Printf("\x1b[32m%s\x1b[0m %s\n", "[INFO]", out)
+		fmt.Printf("[\x1b[32m%s\x1b[0m] %s\n", "INFO", out)
 	default:
-		fmt.Printf("%s", out)
+		fmt.Printf("%s\n", out)
 	}
 }

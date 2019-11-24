@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/matsuyoshi30/gocp/subcommand"
 	"github.com/matsuyoshi30/gocp/util"
 )
 
@@ -64,7 +63,7 @@ func main() {
 	}
 
 	if loginCommand.Parsed() {
-		err := subcommand.Login()
+		err := Login()
 		if err != nil {
 			util.LogWrite(util.FAILED, err.Error())
 			return
@@ -73,7 +72,7 @@ func main() {
 
 	if sessionCommand.Parsed() {
 		util.LogWrite(util.INFO, "Checking session ...")
-		res, err := subcommand.Session()
+		res, err := Session()
 		if err != nil {
 			util.LogWrite(util.FAILED, err.Error())
 			return
@@ -87,7 +86,7 @@ func main() {
 			flag.Usage()
 			return
 		}
-		err := subcommand.Prepare(prepareCommand.Arg(0))
+		err := Prepare(prepareCommand.Arg(0))
 		if err != nil {
 			util.LogWrite(util.FAILED, err.Error())
 			return
@@ -95,7 +94,7 @@ func main() {
 	}
 
 	if testCommand.Parsed() {
-		err := subcommand.RunTest()
+		err := RunTest()
 		if err != nil {
 			util.LogWrite(util.FAILED, err.Error())
 			return
@@ -103,7 +102,7 @@ func main() {
 	}
 
 	if submitCommand.Parsed() {
-		err := subcommand.Submit()
+		err := Submit()
 		if err != nil {
 			util.LogWrite(util.FAILED, err.Error())
 			return
@@ -111,7 +110,7 @@ func main() {
 	}
 
 	if logoutCommand.Parsed() {
-		err := subcommand.Logout()
+		err := Logout()
 		if err != nil {
 			util.LogWrite(util.FAILED, err.Error())
 			return
