@@ -19,6 +19,7 @@ COMMAND:
    session   Check session status (login or not login)
    prepare   Make directory, template file and get test cases for specified task
    test      Run test and compare output and expected value
+   submit    Submit source code
    logout    Logout competitive programming page`
 
 func main() {
