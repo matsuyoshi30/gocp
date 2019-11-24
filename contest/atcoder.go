@@ -191,6 +191,7 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 
 	// FIXME time sleep
 	util.LogWrite(util.INFO, "Wait judging ...")
+	time.Sleep(time.Second * 1) // FIXMEEEE
 
 	for {
 		req, err = http.NewRequest("GET", submissionURL, nil)
@@ -219,7 +220,7 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 			if res[0] == "AC" {
 				util.LogWrite(util.SUCCESS, "PASSED!")
 				break
-			} else if res[0] == "Judging" {
+			} else if res[0] == "Judging" || res[0] == "WJ" {
 				time.Sleep(time.Second * 1) // FIXMEEEE
 				continue
 			} else {

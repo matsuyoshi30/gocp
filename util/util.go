@@ -63,9 +63,20 @@ func Scrape(source, tagtype string) ([]string, error) {
 						tokentype = tokens.Next()
 						if tokentype == html.TextToken {
 							text := strings.Trim(string(tokens.Text()), "\r\n")
-							if text == "AC" || text == "WA" || text == "CE" || text == "TLE" || text == "RE" {
+							if text == "Judging" || text == "WJ" ||
+								text == "AC" || text == "WA" || text == "CE" || text == "TLE" || text == "RE" {
 								ret = append(ret, text)
 								return ret, nil
+							}
+						} else if tokentype == html.StartTagToken {
+							tn, hasAttr := tokens.TagName()
+							if string(tn) == "td" && hasAttr {
+								key, val, moreAttr := tokens.TagAttr()
+								if string(key) == "colspan" && string(val) == "3" {
+									ret = append(ret, "WJ")
+									return ret, nil
+								}
+								hasAttr = moreAttr
 							}
 						} else if tokentype == html.ErrorToken {
 							err := tokens.Err()
