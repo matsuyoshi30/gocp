@@ -27,17 +27,11 @@ func main() {
 		fmt.Println(USAGE)
 	}
 
-	// login
 	loginCommand := flag.NewFlagSet("login", flag.ExitOnError)
-	// check session
 	sessionCommand := flag.NewFlagSet("session", flag.ExitOnError)
-	// make directory and template files (default language is C++)
 	prepareCommand := flag.NewFlagSet("prepare", flag.ExitOnError)
-	// run test
 	testCommand := flag.NewFlagSet("test", flag.ExitOnError)
-	// submit code
 	submitCommand := flag.NewFlagSet("submit", flag.ExitOnError)
-	// logout
 	logoutCommand := flag.NewFlagSet("logout", flag.ExitOnError)
 
 	if len(os.Args) < 2 {

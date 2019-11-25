@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-var RedirectAttemptedError = errors.New("redirect")
-
 func NewClient() (*http.Client, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
@@ -49,15 +47,12 @@ func CheckSession(filename string) (bool, error) { // true ... already login
 		return false, err
 	}
 	hc.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		return RedirectAttemptedError
+		return errros.New("redirect")
 	}
 
-	// make request and add cookie
 	req, err := http.NewRequest("GET", "https://atcoder.jp/contests/abc001/submit", nil)
 	req.AddCookie(cookie)
 
-	// GET submit page
-	// check redirect (if redirected, not login yet)
 	resp, err := hc.Do(req)
 	if urlError, ok := err.(*url.Error); ok && urlError.Err == RedirectAttemptedError {
 		// リダイレクトされる => 未ログイン
