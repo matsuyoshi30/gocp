@@ -36,6 +36,12 @@ func TestScrape(t *testing.T) {
 			nil,
 		},
 		{
+			"<html><head></head><body><tbody><th></th><th></th><th></th><td colspan=\"3\">1/10</td></tbody></body></html>",
+			"tbody",
+			[]string{"WJ"},
+			nil,
+		},
+		{
 			"<html><head><title>ログイン - AtCoder</title></head><body></body></html>",
 			"title",
 			nil,

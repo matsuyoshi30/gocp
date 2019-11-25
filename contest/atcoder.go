@@ -109,7 +109,6 @@ func CheckTasks(contestNo string) ([]string, error) {
 			if len(tasks) == 0 {
 				return nil, err
 			}
-			// ここまで取得した task を返す
 			return tasks, nil
 		}
 		tasks = append(tasks, string(alpha[i]))
@@ -121,6 +120,7 @@ func CheckTasks(contestNo string) ([]string, error) {
 func GetTestCase(contestNo, taskID string) ([]string, error) {
 	url := baseURL + "/contests/" + contestNo + "/tasks/" + contestNo + "_" + taskID
 	util.LogWrite(util.INFO, "Task Page URL", url)
+
 	client, err := client.NewClient()
 	if err != nil {
 		return nil, err
@@ -148,12 +148,10 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 		return err
 	}
 
-	// make URL
 	contestURL := baseURL + "/contests/" + contestNo
 
 	submissionURL := contestURL + "/submissions/me"
 
-	// GET cookie and csrf_token
 	var token string
 	if cookie.Value != "" {
 		if strings.Contains(cookie.Value, "csrf_token") {
@@ -182,12 +180,10 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.AddCookie(cookie)
 
-	resp, err := hc.Do(req)
+	_, err = hc.Do(req)
 	if err != nil {
 		return err
 	}
-	b, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
 
 	// FIXME time sleep
 	util.LogWrite(util.INFO, "Wait judging ...")
@@ -200,13 +196,13 @@ func Submit(cookie *http.Cookie, contestNo, taskID, code string) error {
 		}
 		req.AddCookie(cookie)
 
-		resp, err = hc.Do(req)
+		resp, err := hc.Do(req)
 		if err != nil {
 			return err
 		}
 
 		// check result
-		b, err = ioutil.ReadAll(resp.Body)
+		b, err := ioutil.ReadAll(resp.Body)
 		resp.Body.Close()
 		if err != nil {
 			return err
