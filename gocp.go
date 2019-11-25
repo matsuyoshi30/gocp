@@ -47,9 +47,9 @@ func main() {
 	case "prepare":
 		prepareCommand.Parse(os.Args[2:])
 	case "test":
-		testCommand.Parse(os.Args[0:])
+		testCommand.Parse(os.Args[2:])
 	case "submit":
-		submitCommand.Parse(os.Args[0:])
+		submitCommand.Parse(os.Args[2:])
 	case "logout":
 		logoutCommand.Parse(os.Args[0:])
 	default:
@@ -89,7 +89,11 @@ func main() {
 	}
 
 	if testCommand.Parsed() {
-		err := RunTest()
+		if len(testCommand.Args()) != 1 {
+			flag.Usage()
+			return
+		}
+		err := RunTest(testCommand.Arg(0))
 		if err != nil {
 			util.LogWrite(util.FAILED, err.Error())
 			return
@@ -97,7 +101,11 @@ func main() {
 	}
 
 	if submitCommand.Parsed() {
-		err := Submit()
+		if len(submitCommand.Args()) != 1 {
+			flag.Usage()
+			return
+		}
+		err := Submit(submitCommand.Arg(0))
 		if err != nil {
 			util.LogWrite(util.FAILED, err.Error())
 			return

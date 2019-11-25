@@ -126,20 +126,18 @@ func Prepare(contestNo string) error {
 	return nil
 }
 
-func RunTest() error {
-	util.LogWrite(util.SUCCESS, "Run test")
-
+func RunTest(executableFilename string) error {
 	wd, err := os.Getwd()
 	if err != nil {
 		util.LogWrite(util.FAILED, "Could not get working dir")
 		return err
 	}
 
-	ef := "./a.out" // executable file
-	if _, err := os.Stat(ef); os.IsNotExist(err) {
+	if _, err := os.Stat(executableFilename); os.IsNotExist(err) {
 		util.LogWrite(util.FAILED, "Not found executable file")
 		return err
 	}
+	util.LogWrite(util.SUCCESS, "Run test")
 
 	i := 0
 	cnt := 1
@@ -177,7 +175,7 @@ func RunTest() error {
 		outval := string(outfb)
 
 		// execution
-		cmd := exec.Command(ef)
+		cmd := exec.Command("./" + executableFilename)
 		stdin, err := cmd.StdinPipe()
 		if err != nil {
 			return err
@@ -207,7 +205,7 @@ func RunTest() error {
 	return nil
 }
 
-func Submit() error {
+func Submit(sourceFilename string) error {
 	util.LogWrite(util.SUCCESS, "Submission")
 
 	wd, err := os.Getwd()
@@ -216,14 +214,13 @@ func Submit() error {
 		return err
 	}
 
-	sourcefile := "main.cpp" // TODO: add support optional
-	if _, err := os.Stat(sourcefile); os.IsNotExist(err) {
+	if _, err := os.Stat(sourceFilename); os.IsNotExist(err) {
 		util.LogWrite(util.FAILED, "Not found source file")
 		return err
 	}
 
 	// read sourcefile
-	f, err := os.Open(filepath.Join(wd, sourcefile))
+	f, err := os.Open(filepath.Join(wd, sourceFilename))
 	if err != nil {
 		return err
 	}

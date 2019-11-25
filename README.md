@@ -21,10 +21,10 @@ $ cd ./[contest No]/A
 # Solve task ( If you use language need to compile, you do it )
 
 # Run test cases (e.g. task A).
-$ gocp test
+$ gocp test a.out
 
 # Submit (e.g. task A).
-$ gocp submit
+$ gocp submit main.cpp
 
 # Logout
 $ gocp logout
